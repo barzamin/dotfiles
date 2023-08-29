@@ -19,7 +19,7 @@ function p_sigil() {
 
 prompt='$(p_sigil) $(p_colored_path)
 '
-if [[ "${ZSH_ITERM2_ACTIVE}" ]]; then
+if (( $+ZSH_ITERM2_ACTIVE )); then
 	prompt+='%{$(iterm2_prompt_mark)%}'
 fi
 prompt+='$(p_arrow) '

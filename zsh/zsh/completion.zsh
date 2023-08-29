@@ -1,8 +1,13 @@
 dot_zsh=$HOME/.zsh
 
-fpath=($dot_zsh/completions
-	$(brew --prefix)/share/zsh/site-functions
-	$fpath)
+if (( $+ZSH_HAS_HOMEBREW )); then
+	fpath=($dot_zsh/completions
+		$(brew --prefix)/share/zsh/site-functions
+		$fpath)
+else
+	fpath=($dot_zsh/completions
+		$fpath)
+fi
 
 autoload -Uz compinit
 compinit #-i # -i ignores insecure dirs
