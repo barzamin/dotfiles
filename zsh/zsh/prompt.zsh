@@ -18,5 +18,10 @@ function p_sigil() {
 }
 
 prompt='$(p_sigil) $(p_colored_path)
-%{$(iterm2_prompt_mark)%}$(p_arrow) '
+'
+if [[ "${ZSH_ITERM2_ACTIVE}" ]]; then
+	prompt+='%{$(iterm2_prompt_mark)%}'
+fi
+prompt+='$(p_arrow) '
+
 export ITERM2_SQUELCH_MARK=1
