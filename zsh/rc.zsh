@@ -5,13 +5,13 @@ usrmodules=(
 	'shellopt'
 	'history'
 	'path'
-	'vars'
 	'prompt'
 	'keys'
 	'colors'
 	'gpg'
 	#'nvm' # why the fuck is this so slow
 	'iterm2'
+	'devkitpro'
 
 	# 3rd party
 	'highlighting' # zsh-syntax-highlighting
