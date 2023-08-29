@@ -26,6 +26,3 @@ for module in $usrmodules; {
 	#t=$(date +"%T.%N")
 }
 
-
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
