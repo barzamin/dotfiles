@@ -15,7 +15,7 @@ usrmodules=(
 
 	# 3rd party
 	'highlighting' # zsh-syntax-highlighting
-	'broot'
+	# 'broot'
 )
 
 #startup_log=$dot_zsh/startup.log
@@ -25,4 +25,7 @@ for module in $usrmodules; {
 	[[ -e $dot_zsh/$module.zsh ]] && source $dot_zsh/$module.zsh
 	#t=$(date +"%T.%N")
 }
+
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
