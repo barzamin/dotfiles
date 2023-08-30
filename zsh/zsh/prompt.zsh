@@ -9,17 +9,19 @@ function p_colored_path() {
 	echo "${${PWD/#$HOME/~}//\//$slash}"
 }
 
-function p_host() {
-	echo "$(hostname -s)"
+function p_ssh_markings() {
+	if [[ -n "${SSH_TTY}" ]]; then
+		echo "$(hostname -s)"
+	fi
 }
 
 function p_sigil() {
 	echo "%F{blue}λ%f"
 }
 
-prompt='$(p_sigil) $(p_colored_path)
+prompt='$(p_sigil) $(p_colored_path) $(p_ssh_markings)
 '
-if (( $+ZSH_ITERM2_ACTIVE )); then
+if [[ -n "${ZSH_ITERM2_ACTIVE}" ]]; then
 	prompt+='%{$(iterm2_prompt_mark)%}'
 fi
 prompt+='$(p_arrow) '
