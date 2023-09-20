@@ -16,7 +16,7 @@ def makelink(anchor: Path, target: Path):
             logger.info(f'removing and updating existing symlink at {anchor}')
             anchor.unlink()
         else:
-            raise FileExistsError(f'cannot make link {anchor} <- {path}; {anchor} is already a file/folder')
+            raise FileExistsError(f'cannot make link {anchor} <- {target}; {anchor} is already a file/folder')
 
     anchor.symlink_to(target)
 
