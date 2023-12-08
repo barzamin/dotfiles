@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import click
+from rich.console import Console
+from rich.logging import RichHandler
 import requests
 from pathlib import Path
 import logging
@@ -9,42 +11,59 @@ logger = logging.getLogger(__name__)
 
 DOTFILES_DIR = Path(__file__).parent
 HOMEDIR = Path.home()
+XDG_CONFIG_HOME = HOMEDIR / '.config'
 
 def makelink(anchor: Path, target: Path):
+    replaced_existing = False
     if anchor.exists():
         if anchor.is_symlink():
-            logger.info(f'removing and updating existing symlink at {anchor}')
+            replaced_existing = True
             anchor.unlink()
         else:
             raise FileExistsError(f'cannot make link {anchor} <- {target}; {anchor} is already a file/folder')
 
+    logger.info(f'linking {anchor} <- {target}' + ' (replaced existing symlink)' if replaced_existing else '')
     anchor.symlink_to(target)
 
+class Collector:
+    def __init__(self):
+        self.installers = {}
+
+    def installer(self, name):
+        def deco(fn):
+            self.installers[name] = fn
+            return fn
+
+        return deco
+
+dotfiles = Collector()
+
+@dotfiles.installer('zsh')
 def install_zsh():
     makelink(HOMEDIR / '.zshrc', DOTFILES_DIR / 'zsh' / 'rc.zsh')
     makelink(HOMEDIR / '.zsh', DOTFILES_DIR / 'zsh' / 'zsh')
 
+@dotfiles.installer('nvim')
 def install_nvim():
-    nvim_cfg_dir = HOMEDIR / '.config' / 'nvim'
+    nvim_cfg_dir = XDG_CONFIG_HOME / 'nvim'
     nvim_cfg_dir.mkdir(exist_ok=True)
-    makelink(nvim_cfg_dir / 'init.vim', DOTFILES_DIR / 'nvim' / 'init.vim')
+    makelink(nvim_cfg_dir / 'init.lua', DOTFILES_DIR / 'nvim' / 'init.lua')
 
-    # install vim-plug
-    VIMPLUG_UPSTREAM = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-    autoload_dir = HOMEDIR / '.local' / 'share' / 'nvim' / 'site' / 'autoload'
-    autoload_dir.mkdir(parents=True, exist_ok=True)
-    vimplug = autoload_dir / 'plug.vim'
-
-    logger.info(f'downloading vim-plug from {VIMPLUG_UPSTREAM}')
-    with open(vimplug, 'wb') as f:
-        r = requests.get(VIMPLUG_UPSTREAM)
-        f.write(r.content)
+@dotfiles.installer('tmux')
+def install_tmux():
+    makelink(HOMEDIR / '.tmux.conf', DOTFILES_DIR / 'tmux' / 'tmux.conf')
 
 @click.command()
 def cli():
-    install_zsh()
-    install_nvim()
+    console = Console()
+    for name, installer in dotfiles.installers.items():
+        console.print(f'[blue]running installer [underline]{name}')
+        try:
+            installer()
+        except Exception as e:
+            console.print(f'[red]installer [underline]{name}[/underline] failed:')
+            console.print_exception()
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG, handlers=[RichHandler()], format='%(message)s', datefmt='[%X]')
     cli()

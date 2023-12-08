@@ -10,5 +10,5 @@ else
 fi
 
 autoload -Uz compinit
-compinit #-i # -i ignores insecure dirs
+compinit -u #-i # -i ignores insecure dirs
 zstyle ':completion:*' accept-exact-dirs true # related to mount issue @ desres?

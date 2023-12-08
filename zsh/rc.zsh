@@ -5,6 +5,7 @@ usrmodules=(
 	'shellopt'
 	'history'
 	'path'
+	'ld'
 	'iterm2' # before prompt
 	'prompt'
 	'keys'
@@ -25,4 +26,3 @@ for module in $usrmodules; {
 	[[ -e $dot_zsh/$module.zsh ]] && source $dot_zsh/$module.zsh
 	#t=$(date +"%T.%N")
 }
-
