@@ -1,45 +1,93 @@
 -- vim: ts=2 sts=2 sw=2 et
 
+-- bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
-    lazypath,
-  })
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({
+      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+      { out, "WarningMsg" },
+      { "\nPress any key to exit..." },
+    }, true, {})
+    vim.fn.getchar()
+    os.exit(1)
+  end
 end
 vim.opt.rtp:prepend(lazypath)
 
 vim.g.mapleader = ','
 
 require("lazy").setup({
-  -- rice
-  {
-    "folke/tokyonight.nvim",
-    lazy = false,
-    priority = 1000,
-    opts = {},
+  spec = {
+    -- utility
+    {
+      "folke/snacks.nvim",
+      priority = 1000,
+      lazy = false,
+      opts = {
+        indent = {
+          enabled = true,
+        },
+        input = {
+          enabled = true,
+        },
+      },
+    },
+    {
+      "folke/which-key.nvim",
+      event = "VeryLazy",
+    },
+
+
+    -- rice
+    {
+      "folke/tokyonight.nvim",
+      lazy = false,
+      priority = 1500,
+      opts = {},
+    },
+    {
+      "nvim-lualine/lualine.nvim",
+      dependencies = { "nvim-tree/nvim-web-devicons" },
+    },
+
+    -- search/nav
+    {
+      "ibhagwan/fzf-lua",
+      dependencies = { "echasnovski/mini.icons" },
+      keys = {
+        { "<leader>ff", "<cmd>FzfLua files<cr>", desc = "Find files" },
+        { "<leader>fg", "<cmd>FzfLua live_grep<cr>", desc = "Live grep" },
+        { "<leader>fb", "<cmd>FzfLua buffers<cr>", desc = "Find buffers" },
+      },
+    },
+
+    -- lsp and syntaxes
+    { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+
+    -- completion
+    {
+      'saghen/blink.cmp',
+      version = '*',
+      opts = {
+        keymap = {
+          preset = "super-tab",
+        },
+        sources = {
+          default = { "lsp", "path", "snippets", "buffer" },
+        },
+        fuzzy = {
+          prebuilt_binaries = {
+            download = false, -- do it manually; glib incompatibility :(
+          },
+        },
+      },
+      opts_extend = { "sources.default" }
+    },
   },
-  {
-    'Yggdroot/indentLine',
-    lazy = false,
-  },
-  {
-    'nvim-lualine/lualine.nvim',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
-  },
-  -- editing
-  { 'tpope/vim-rsi' },
-  -- search/nav
-  {
-    'nvim-telescope/telescope.nvim', tag = '0.1.4',
-    dependencies = { 'nvim-lua/plenary.nvim' }
-  },
-  -- lsp and syntaxes
-  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" }
+  checker = { enabled = true },
 })
 
 -- rice
@@ -51,13 +99,11 @@ vim.cmd[[colorscheme tokyonight]]
 
 require('lualine').setup({
   options = {
-    theme = 'tokyonight'
+    theme = 'auto',
+
+    icons_enabled = false,
+    section_separators = '',
+    component_separators = '',
   }
 })
 
--- search/nav
-local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
-vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
-vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
