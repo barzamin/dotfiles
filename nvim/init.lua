@@ -107,3 +107,6 @@ require('lualine').setup({
   }
 })
 
+-- ui
+vim.wo.number = true
+
