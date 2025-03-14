@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["rich", "click"]
+# ///
 
 import click
 from rich.console import Console
 from rich.logging import RichHandler
-import requests
 from pathlib import Path
 import logging
 
