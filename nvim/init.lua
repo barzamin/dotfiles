@@ -19,6 +19,7 @@ vim.opt.rtp:prepend(lazypath)
 
 vim.g.mapleader = ','
 
+-- packages
 require("lazy").setup({
   spec = {
     -- utility
@@ -38,6 +39,11 @@ require("lazy").setup({
     {
       "folke/which-key.nvim",
       event = "VeryLazy",
+    },
+    {
+      "folke/trouble.nvim",
+      opts = {},
+      cmd = "Trouble",
     },
 
 
@@ -65,7 +71,24 @@ require("lazy").setup({
     },
 
     -- lsp and syntaxes
-    { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+    {
+      "nvim-treesitter/nvim-treesitter",
+      build = ":TSUpdate",
+      ensure_installed = {
+        "c", "cpp",
+        "lua",
+        "python",
+        "rust",
+        "markdown", "markdown_inline",
+        "vim", "vimdoc",
+      },
+    },
+    { "williamboman/mason.nvim" },
+    { "williamboman/mason-lspconfig.nvim" },
+    { "neovim/nvim-lspconfig" },
+
+    -- debugging
+    { "mfussenegger/nvim-dap" },
 
     -- completion
     {
@@ -78,14 +101,23 @@ require("lazy").setup({
         sources = {
           default = { "lsp", "path", "snippets", "buffer" },
         },
+        -- experimental
+        signature = {
+          enabled = true,
+          window = {
+            border = 'single',
+            direction_priority = {'s','n'},
+          },
+        },
         fuzzy = {
           prebuilt_binaries = {
-            download = false, -- do it manually; glib incompatibility :(
           },
         },
       },
       opts_extend = { "sources.default" }
     },
+
+    -- llms :(
   },
   checker = { enabled = true },
 })
@@ -109,4 +141,12 @@ require('lualine').setup({
 
 -- ui
 vim.wo.number = true
+
+-- lsp
+require'mason'.setup{}
+require'mason-lspconfig'.setup{}
+
+require'lspconfig'.lua_ls.setup{}
+require'lspconfig'.rust_analyzer.setup{}
+require'lspconfig'.basedpyright.setup{}
 
