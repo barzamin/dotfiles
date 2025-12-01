@@ -16,7 +16,7 @@ function p_ssh_markings() {
 }
 
 function p_git_markings() {
-	[[ "${MOON_DISABLE_GIT_PROMPT}" ]] && exit
+	[ -n "${MOON_DISABLE_GIT_PROMPT+1}" ] && exit
 	git rev-parse --is-inside-work-tree >/dev/null 2>&1
 	if [[ "$?" = 0 ]]; then
 		local dirty="$(git status --porcelain)"
