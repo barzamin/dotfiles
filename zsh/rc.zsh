@@ -16,7 +16,6 @@ usrmodules=(
 
 	# 3rd party
 	'highlighting' # zsh-syntax-highlighting
-	# 'broot'
 )
 
 #startup_log=$dot_zsh/startup.log
