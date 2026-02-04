@@ -1,5 +1,13 @@
 dot_zsh=$HOME/.zsh
+
+typeset -a usrmodules
+# core modules
 usrmodules=(
+	'util'
+)
+
+# user modules
+usrmodules+=(
 	'brew'
 	'completion'
 	'shellopt'

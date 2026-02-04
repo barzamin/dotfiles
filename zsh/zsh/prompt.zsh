@@ -16,16 +16,34 @@ function p_ssh_markings() {
 }
 
 function p_git_markings() {
+	local branch dirty
+	local tic toc dt
+
+	tic=$(rightnow)
 	[ -n "${MOON_DISABLE_GIT_PROMPT+1}" ] && exit
 	git rev-parse --is-inside-work-tree >/dev/null 2>&1
-	if [[ "$?" = 0 ]]; then
-		local dirty="$(git status --porcelain)"
-		local branch="$(git rev-parse --abbrev-ref HEAD)"
-		if [[ "${branch}" = 'HEAD' ]]; then
-			branch="dtch@$(git rev-parse --short=8 HEAD)"
-		fi
-		printf " (${branch}%%F{red}${dirty:+*}%%f)"
+	if [ $? -ne 0 ]; then return; fi
+
+	branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+	# uninitialized repos will have HEAD pointing at refs/master/head
+	# or similar, but that ref won't exist yet. early out
+	if [ $? -ne 0 ] || [ -z $branch ]; then return; fi
+
+	dirty="$(git status --porcelain)"
+	if [[ "${branch}" = 'HEAD' ]]; then
+		branch="dtch@$(git rev-parse --short=8 HEAD)"
 	fi
+	printf " (${branch}%%F{red}${dirty:+*}%%f)"
+
+	#toc=$(rightnow)
+	#dt=$((toc-tic))
+	#echo $dt
+
+	#if (( $dt > 0.15 )); then
+	#	# too slow, disable for this repo until we exit it
+	#	echo "disabling"
+	#	typeset -gx MOON_GIT_PROMPT_TEMP_DISABLE_FOR=$(git rev-parse --show-toplevel)
+	#fi
 }
 
 function p_sigil() {
