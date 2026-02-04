@@ -150,3 +150,8 @@ require'lspconfig'.lua_ls.setup{}
 require'lspconfig'.rust_analyzer.setup{}
 require'lspconfig'.basedpyright.setup{}
 
+-- trim trailing whitespace on save
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*",
+  command = [[%s/\s\+$//e]],
+})
