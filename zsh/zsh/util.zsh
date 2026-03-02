@@ -1,4 +1,5 @@
 function rightnow() {
-	cat /proc/uptime | read now _
+	local now _discard
+	cat /proc/uptime | read now _discard
 	echo $now
 }
