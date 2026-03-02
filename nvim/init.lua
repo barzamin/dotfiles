@@ -64,9 +64,11 @@ require("lazy").setup({
       "ibhagwan/fzf-lua",
       dependencies = { "echasnovski/mini.icons" },
       keys = {
-        { "<leader>ff", "<cmd>FzfLua files<cr>", desc = "Find files" },
-        { "<leader>fg", "<cmd>FzfLua live_grep<cr>", desc = "Live grep" },
-        { "<leader>fb", "<cmd>FzfLua buffers<cr>", desc = "Find buffers" },
+        { "<leader>ff", [[<cmd>FzfLua files<cr>]], desc = "Find files" },
+        { "<leader>fg", [[<cmd>FzfLua live_grep<cr>]], desc = "Live grep" },
+        { "<leader>fb", [[<cmd>FzfLua buffers<cr>]], desc = "Find buffers" },
+        { "<leader>ftb", [[<cmd>FzfLua btags<cr>]], desc = "Find in buffer tags" },
+        { "<leader>ftp", [[<cmd>FzfLua tags<cr>]], desc = "Find in project tags" },
       },
     },
 
@@ -107,10 +109,6 @@ require("lazy").setup({
           window = {
             border = 'single',
             direction_priority = {'s','n'},
-          },
-        },
-        fuzzy = {
-          prebuilt_binaries = {
           },
         },
       },
