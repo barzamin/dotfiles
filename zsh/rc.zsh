@@ -13,7 +13,6 @@ usrmodules+=(
 	'shellopt'
 	'history'
 	'path'
-	'ld'
 	'iterm2' # before prompt
 	'prompt'
 	'keys'
