@@ -34,6 +34,10 @@ require("lazy").setup({
         input = {
           enabled = true,
         },
+        picker = {
+          enabled = true,
+          ui_select = true,
+        },
       },
     },
     {
@@ -45,7 +49,6 @@ require("lazy").setup({
       opts = {},
       cmd = "Trouble",
     },
-
 
     -- rice
     {
@@ -139,6 +142,7 @@ require('lualine').setup({
 
 -- ui
 vim.wo.number = true
+vim.opt.conceallevel = 1
 
 -- lsp
 require'mason'.setup{}
