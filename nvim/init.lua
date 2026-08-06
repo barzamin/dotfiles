@@ -50,6 +50,11 @@ require("lazy").setup({
       cmd = "Trouble",
     },
 
+    -- vcs integration
+    {
+      "sindrets/diffview.nvim",
+    },
+
     -- rice
     {
       "folke/tokyonight.nvim",
